@@ -19,8 +19,10 @@ import {
   BellIcon,
   ArrowBackIcon,
 } from "@chakra-ui/icons";
-import Dashboard from "../compontnts/clientComponents/Dashboard";
+import Dashboard from "../compontnts/teachercomponents/Dashboard";
 import Calendar from "../compontnts/clientComponents/Calendar";
+import Specialty from "../compontnts/teachercomponents/Specialty";
+import AppealList from "../compontnts/teachercomponents/AppealList";
 import Results from "../compontnts/clientComponents/Results";
 import Appeals from "../compontnts/clientComponents/Appeals";
 //import moduleName from "module";
@@ -113,7 +115,7 @@ export default function Home() {
                 onClick={() => setscreenIndex(2)}
               />
               <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                Results
+                fill in the notes
               </Text>
             </Flex>
             <Flex
@@ -134,7 +136,7 @@ export default function Home() {
                 onClick={() => setscreenIndex(3)}
               />
               <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                appeal results
+                appeal List
               </Text>
             </Flex>
             <Flex
@@ -167,9 +169,9 @@ export default function Home() {
           ) : screenIndex == 1 ? (
             <Calendar />
           ) : screenIndex == 2 ? (
-            <Results />
+            <Specialty />
           ) : (
-            <Appeals />
+            <AppealList />
           )}
         </Stack>
       </Container>
