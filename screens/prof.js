@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import {
   Container,
   Box,
@@ -11,18 +12,7 @@ import {
   Button,
   Flex,
   Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
 } from "@chakra-ui/react";
-import { ImUser, ImUserTie } from "react-icons/im";
-import { CgNotes } from "react-icons/cg";
-import { MdOutlineBook } from "react-icons/md";
 import {
   DragHandleIcon,
   CalendarIcon,
@@ -30,18 +20,15 @@ import {
   BellIcon,
   ArrowBackIcon,
 } from "@chakra-ui/icons";
-import Dashboard from "../compontnts/admincomponents/Dashboard";
-import Calendar from "../compontnts/admincomponents/Calendar";
-import Students from "../compontnts/admincomponents/Students";
-import Teachers from "../compontnts/admincomponents/Teachers";
-import IccMain from "../compontnts/admincomponents/icc/IccMain";
-import Pv from "../compontnts/admincomponents/Pv";
+import Dashboard from "../compontnts/teachercomponents/Dashboard";
+import Calendar from "../compontnts/clientComponents/Calendar";
+import Specialty from "../compontnts/teachercomponents/Specialty";
+import AppealList from "../compontnts/teachercomponents/AppealList";
+import Results from "../compontnts/clientComponents/Results";
+import Appeals from "../compontnts/clientComponents/Appeals";
 //import moduleName from "module";
-
 export default function Home() {
   const [screenIndex, setscreenIndex] = useState(0);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <div
       style={{
@@ -57,7 +44,7 @@ export default function Home() {
         height="100vh"
       >
         <Stack direction={["column", "row"]} spacing="0px">
-          <VStack minW="15%" h="100vh" spacing="0px">
+          <VStack w="15%" h="100vh" spacing="0px">
             <Flex
               h="15vh"
               w="100%"
@@ -70,7 +57,7 @@ export default function Home() {
               </Text>
             </Flex>
             <Flex
-              h="11.6vh"
+              h="14vh"
               w="100%"
               align="center"
               justify="center"
@@ -91,7 +78,7 @@ export default function Home() {
               </Text>
             </Flex>
             <Flex
-              h="11.6vh"
+              h="14vh"
               w="100%"
               align="center"
               justify="center"
@@ -112,7 +99,7 @@ export default function Home() {
               </Text>
             </Flex>
             <Flex
-              h="11.6vh"
+              h="14vh"
               w="100%"
               align="center"
               justify="center"
@@ -125,15 +112,15 @@ export default function Home() {
                 size="md"
                 bg="#f3f8ff"
                 aria-label="Search database"
-                icon={<ImUser />}
+                icon={<EditIcon />}
                 onClick={() => setscreenIndex(2)}
               />
               <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                Students
+                fill in the notes
               </Text>
             </Flex>
             <Flex
-              h="11.6vh"
+              h="14vh"
               w="100%"
               align="center"
               justify="center"
@@ -146,53 +133,24 @@ export default function Home() {
                 size="md"
                 bg="#f3f8ff"
                 aria-label="Search database"
-                icon={<ImUserTie />}
+                icon={<BellIcon />}
                 onClick={() => setscreenIndex(3)}
               />
               <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                Teachers
+                appeal List
               </Text>
             </Flex>
             <Flex
-              h="11.6vh"
+              h="14vh"
               w="100%"
               align="center"
               justify="center"
               direction="column"
             >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="#1479ff"
-                size="md"
-                bg="#f3f8ff"
-                aria-label="Search database"
-                icon={<CgNotes />}
-                onClick={() => setscreenIndex(4)}
-              />
-              <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                ICC
-              </Text>
-            </Flex>
-            <Flex
-              h="11.6vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="#1479ff"
-                size="md"
-                bg="#f3f8ff"
-                aria-label="Search database"
-                icon={<MdOutlineBook />}
-                onClick={() => setscreenIndex(5)}
-              />
-              <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                PVs
+              <Avatar name="Ryan Florence" src="https://picsum.photos/200" />
+
+              <Text fontSize="md" color="#637a98" fontWeight="bold" mt="10px">
+                Slamani Mehdi
               </Text>
             </Flex>
             <Center h="15vh" w="100%">
@@ -201,6 +159,7 @@ export default function Home() {
                 bg="transparent"
                 fontWeight="bold"
                 color="#637a98"
+                onClick={() => signOut()}
                 variant="solid"
               >
                 Log Out
@@ -212,13 +171,9 @@ export default function Home() {
           ) : screenIndex == 1 ? (
             <Calendar />
           ) : screenIndex == 2 ? (
-            <Students />
-          ) : screenIndex == 3 ? (
-            <Teachers />
-          ) : screenIndex == 4 ? (
-            <IccMain />
+            <Specialty />
           ) : (
-            <Pv />
+            <AppealList />
           )}
         </Stack>
       </Container>

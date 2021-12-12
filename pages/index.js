@@ -1,179 +1,80 @@
-import React, { useState } from "react";
-import {
-  Container,
-  Box,
-  Stack,
-  HStack,
-  Avatar,
-  Center,
-  IconButton,
-  VStack,
-  Button,
-  Flex,
-  Text,
-} from "@chakra-ui/react";
-import {
-  DragHandleIcon,
-  CalendarIcon,
-  EditIcon,
-  BellIcon,
-  ArrowBackIcon,
-} from "@chakra-ui/icons";
-import Dashboard from "../compontnts/clientComponents/Dashboard";
-import Calendar from "../compontnts/clientComponents/Calendar";
-import Results from "../compontnts/clientComponents/Results";
-import Appeals from "../compontnts/clientComponents/Appeals";
-//import moduleName from "module";
-export default function Home() {
-  const [screenIndex, setscreenIndex] = useState(0);
-  return (
-    <div
-      style={{
-        backgroundColor: "#f2f7fe",
-      }}
-    >
-      <Container
-        maxW="container.xl"
-        borderRadius={50}
-        boxShadow="xl"
-        bg="white"
-        p="0px"
-        height="100vh"
-      >
-        <Stack direction={["column", "row"]} spacing="0px">
-          <VStack w="15%" h="100vh" spacing="0px">
-            <Flex
-              h="15vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <Text fontSize="md" color="#1479ff" fontWeight="bold" mt="10px">
-                App Name
-              </Text>
-            </Flex>
-            <Flex
-              h="14vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="white"
-                size="md"
-                bg="#1479ff"
-                aria-label="Search database"
-                icon={<DragHandleIcon />}
-                onClick={() => setscreenIndex(0)}
-              />
-              <Text fontSize="md" color="#1479ff" fontWeight="bold" mt="10px">
-                Dashboard
-              </Text>
-            </Flex>
-            <Flex
-              h="14vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="#1479ff"
-                size="md"
-                bg="#f3f8ff"
-                aria-label="Search database"
-                icon={<CalendarIcon />}
-                onClick={() => setscreenIndex(1)}
-              />
-              <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                Calendar
-              </Text>
-            </Flex>
-            <Flex
-              h="14vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="#1479ff"
-                size="md"
-                bg="#f3f8ff"
-                aria-label="Search database"
-                icon={<EditIcon />}
-                onClick={() => setscreenIndex(2)}
-              />
-              <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                Results
-              </Text>
-            </Flex>
-            <Flex
-              h="14vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <IconButton
-                boxShadow="Dark lg"
-                borderRadius={12}
-                color="#1479ff"
-                size="md"
-                bg="#f3f8ff"
-                aria-label="Search database"
-                icon={<BellIcon />}
-                onClick={() => setscreenIndex(3)}
-              />
-              <Text fontSize="md" color="#93a2b8" fontWeight="bold" mt="10px">
-                appeal results
-              </Text>
-            </Flex>
-            <Flex
-              h="14vh"
-              w="100%"
-              align="center"
-              justify="center"
-              direction="column"
-            >
-              <Avatar name="Ryan Florence" src="https://picsum.photos/200" />
+import { useSession, signIn, signOut } from "next-auth/react";
+import { Button, Text, Flex, Center, Image } from "@chakra-ui/react";
+import Student from "../screens/student";
+import Teacher from "../screens/prof";
+import Admin from "../screens/admin";
+import Typist from "react-typist";
+import styles from "../styles/typist.module.css";
 
-              <Text fontSize="md" color="#637a98" fontWeight="bold" mt="10px">
-                Slamani Mehdi
-              </Text>
-            </Flex>
-            <Center h="15vh" w="100%">
-              <Button
-                leftIcon={<ArrowBackIcon />}
-                bg="transparent"
-                fontWeight="bold"
-                color="#637a98"
-                variant="solid"
-              >
-                Log Out
-              </Button>
-            </Center>
-          </VStack>
-          {screenIndex == 0 ? (
-            <Dashboard />
-          ) : screenIndex == 1 ? (
-            <Calendar />
-          ) : screenIndex == 2 ? (
-            <Results />
-          ) : (
-            <Appeals />
-          )}
-        </Stack>
-      </Container>
-    </div>
+export default function Component() {
+  const { data: session } = useSession();
+
+  if (session) {
+    if (session.user.role === "student") {
+      return <Student />;
+    }
+
+    if (session.user.role === "teacher") {
+      return <Teacher />;
+    }
+
+    if (session.user.role === "admin") {
+      return <Admin />;
+    }
+  }
+  return (
+    <Flex w="100%" h="100vh">
+      <Flex w="50%" bg="red" h="100%" direction="column">
+        <Center h="50%" w="100%" bg="#F1F6FC">
+          <Image
+            src="/1.PNG"
+            alt="Dan Abramov"
+            w="80%"
+            h="80%"
+            transform=" rotate(15deg)"
+          />
+        </Center>
+        <Center h="50%" w="100%" bg="#F1F6FC">
+          <Image src="/2.PNG" alt="Dan Abramov" w="70%" h="70%" />
+        </Center>
+      </Flex>
+      <Flex
+        w="50%"
+        align="center"
+        justify="center"
+        direction="column"
+        bg="#F1F6FC"
+        h="100%"
+      >
+        <Text fontSize="2xl" fontWeight="bold" letterSpacing={10} mb={10}>
+          Welcome to AppName
+        </Text>
+
+        <Text fontSize="xl" letterSpacing={10} mb={10}>
+          <Typist className={(styles.Typist, styles.Cursor)}>
+            login to get access
+          </Typist>
+        </Text>
+        <Button
+          w="50%"
+          variant="outline"
+          colorScheme="blue"
+          onClick={() => signIn()}
+        >
+          LogIn
+        </Button>
+      </Flex>
+    </Flex>
   );
 }
-// calandar , delib . recour result
+/*
+
+        <button onClick={() => signOut()}>Sign out</button>
+      <button onClick={() => signIn()}>Sign in</button>
+      <Text fontSize="2xl">
+        <Typist className={(styles.Typist, styles.Cursor)}>
+          Animatsdflkjsdflkj sdkfjlkjlsdkjf sdkjfe this text.
+        </Typist>
+      </Text>
+
+*/
