@@ -101,19 +101,9 @@ export default function Dashboard() {
                 )}
               </Center>
               <Center flex="1">
-                {item == "ESIL" ? (
-                  <Badge bg="blue" color="white" m={1}>
-                    L2
-                  </Badge>
-                ) : item === "MI" ? (
-                  <Badge bg="blue" color="white" m={1}>
-                    L1
-                  </Badge>
-                ) : (
-                  <Badge bg="blue" color="white" m={1}>
-                    L3
-                  </Badge>
-                )}
+                <Badge bg="blue" color="white" m={1}>
+                  Licence
+                </Badge>
               </Center>
             </Flex>
           </Flex>

@@ -8,10 +8,9 @@ import styles from "../styles/typist.module.css";
 
 export default function Component() {
   const { data: session } = useSession();
-
   if (session) {
     if (session.user.role === "student") {
-      return <Student />;
+      return <Admin />;
     }
 
     if (session.user.role === "teacher") {
