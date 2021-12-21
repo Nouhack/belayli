@@ -3,7 +3,7 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { PolarArea } from "react-chartjs-2";
 import { AddIcon } from "@chakra-ui/icons";
-
+import Unity from "../../utl/Unitity";
 import {
   Container,
   Input,
@@ -32,6 +32,7 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
   DragHandleIcon,
@@ -74,6 +75,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const counter = useSelector((state) => state.counter);
 
+  const [challenge, setchallenge] = useState([]);
   const special = useSelector((state) => state.icc);
   const [mod, setmod] = useState([
     "Anglais 1",
@@ -178,12 +180,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -196,12 +195,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -215,12 +211,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -234,12 +227,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -252,12 +242,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -271,12 +258,9 @@ export default function Dashboard() {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
                 } else {
-                  const index = semestersselected.indexOf(e.target.value);
-                  if (index > -1) {
-                    var newArray = semestersselected;
-                    newArray.splice(index, 1);
-                    setsemestersselected(newArray);
-                  }
+                  setsemestersselected((prev) =>
+                    prev.filter((item, index) => item != e.target.value)
+                  );
                 }
               }}
             >
@@ -285,142 +269,25 @@ export default function Dashboard() {
           </Stack>
         </Center>
       </Flex>
-      <Flex w="100%" h="100%">
-        <Center bg="white" w="10%">
-          <Text
-            transform="rotate(270deg)"
-            color="white"
-            fontWeight="bold"
-            fontSize="md"
-            bg="#1479ff"
-            p={2}
-          >
-            Unites
-          </Text>
-        </Center>
-        <Center w="100%">
-          <Center
-            justifyContent="space-around"
-            h="100%"
-            direction="row"
-            w="100%"
-          >
-            <Flex direction="column" maxW="22%" justify="space-around" h="100%">
-              <Checkbox
-                colorScheme="red"
-                value="unite Fondamental"
-                onChange={(e) => {
-                  setfondunitlist(!e.target.checked);
-                  if (e.target.checked) {
-                    setunitiesselected((val) => [...val, e.target.value]);
-                  } else {
-                    const index = unitiesselected.indexOf(e.target.value);
-                    if (index > -1) {
-                      var newArray = unitiesselected;
-                      newArray.splice(index, 1);
-                      setunitiesselected(newArray);
-                    }
-                  }
-                }}
-              >
-                Unite Fondamentale
-              </Checkbox>
-              <Select
-                isDisabled={fondunitlist}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={options}
-              />
-            </Flex>
-            <Flex direction="column" justify="space-around" h="100%" maxW="22%">
-              <Checkbox
-                colorScheme="green"
-                value="unite Methodologique"
-                onChange={(e) => {
-                  setmethunitlist(!e.target.checked);
-                  if (e.target.checked) {
-                    setunitiesselected((val) => [...val, e.target.value]);
-                  } else {
-                    const index = unitiesselected.indexOf(e.target.value);
-                    if (index > -1) {
-                      var newArray = unitiesselected;
-                      newArray.splice(index, 1);
-                      setunitiesselected(newArray);
-                    }
-                  }
-                }}
-              >
-                Unite Methodologique
-              </Checkbox>
-              <Select
-                isDisabled={methunitlist}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={options}
-              />
-            </Flex>
-            <Flex direction="column" justify="space-around" h="100%" maxW="22%">
-              <Checkbox
-                colorScheme="red"
-                value="unite Decouverte 1"
-                onChange={(e) => {
-                  setdecovunitlist(!e.target.checked);
-                  if (e.target.checked) {
-                    setunitiesselected((val) => [...val, e.target.value]);
-                  } else {
-                    const index = unitiesselected.indexOf(e.target.value);
-                    if (index > -1) {
-                      var newArray = unitiesselected;
-                      newArray.splice(index, 1);
-                      setunitiesselected(newArray);
-                    }
-                  }
-                }}
-              >
-                Unite Decouverte 1
-              </Checkbox>
-              <Select
-                isDisabled={decovunitlist}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={options}
-              />
-            </Flex>
-            <Flex direction="column" justify="space-around" h="100%" maxW="22%">
-              <Checkbox
-                colorScheme="green"
-                value="unite Traversale 1"
-                onChange={(e) => {
-                  settransunitlist(!e.target.checked);
-                  if (e.target.checked) {
-                    setunitiesselected((val) => [...val, e.target.value]);
-                  } else {
-                    const index = unitiesselected.indexOf(e.target.value);
-                    if (index > -1) {
-                      var newArray = unitiesselected;
-                      newArray.splice(index, 1);
-                      setunitiesselected(newArray);
-                    }
-                  }
-                }}
-              >
-                Unite Transversale 1
-              </Checkbox>
-              <Select
-                isDisabled={transunitlist}
-                closeMenuOnSelect={false}
-                components={animatedComponents}
-                isMulti
-                options={options}
-              />
-            </Flex>
-          </Center>
-        </Center>
-      </Flex>
 
+      {semestersselected.length > 0 ? (
+        semestersselected.map((item, index) => {
+          return (
+            <Unity
+              challenge={challenge}
+              setchallenge={setchallenge}
+              sem={item}
+              key={item}
+              unity={unitiesselected}
+              setunit={setunitiesselected}
+            />
+          );
+        })
+      ) : (
+        <Center w="100%" h="100%">
+          <Text fontSize="xl">No semesters were selected</Text>
+        </Center>
+      )}
       <Flex w="100%" minH="16.6%">
         <Center bg="white" w="10%">
           <Text
@@ -468,14 +335,33 @@ export default function Dashboard() {
           w="50%"
           variant="outline"
           colorScheme="blue"
-          onClick={() =>
+          onClick={() => {
+            axios
+              .post("/api/initial", {
+                data: challenge,
+              })
+              .then(function (response) {
+                console.log("item added to the db");
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
             dispatch({
               type: "ADD_ICC",
-            })
-          }
+            });
+          }}
         >
           {" "}
           Save
+        </Button>
+        <Button
+          leftIcon={<AddIcon />}
+          w="50%"
+          variant="outline"
+          colorScheme="blue"
+          onClick={() => console.log(challenge)}
+        >
+          kiki
         </Button>
       </Center>
     </Flex>

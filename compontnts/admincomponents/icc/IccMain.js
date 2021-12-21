@@ -58,6 +58,7 @@ export default function Dashboard() {
             borderRadius={10}
             border="1px solid #CCCCCC"
             overflow="hidden"
+            key={index}
           >
             <Center w="100%" h="50%">
               {item}

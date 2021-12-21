@@ -5,9 +5,11 @@ import Teacher from "../screens/prof";
 import Admin from "../screens/admin";
 import Typist from "react-typist";
 import styles from "../styles/typist.module.css";
-
+import axios from "axios";
+import { useEffect } from "react";
 export default function Component() {
   const { data: session } = useSession();
+
   if (session) {
     if (session.user.role === "student") {
       return <Admin />;
