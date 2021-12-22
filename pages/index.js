@@ -4,7 +4,7 @@ import Student from "../screens/student";
 import Teacher from "../screens/prof";
 import Admin from "../screens/admin";
 import Typist from "react-typist";
-import styles from "../styles/typist.module.css";
+import styles from "../styles/Typist.module.css";
 import axios from "axios";
 import { useEffect } from "react";
 export default function Component() {

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { PolarArea } from "react-chartjs-2";
 import { AddIcon } from "@chakra-ui/icons";
 import IccDetails from "./IccDtails";
+import axios from "axios";
+import IccItem from "./iccItem";
 import {
   Container,
   Box,
@@ -26,6 +28,15 @@ import {
 } from "@chakra-ui/icons";
 
 export default function Dashboard() {
+  const [icc, seticc] = useState([]);
+  useEffect(() => {
+    console.log("reni hna");
+    axios.get("/api/icc").then((res) => {
+      seticc(res.data);
+      console.log(res.data);
+    });
+  }, []);
+
   const [showDetail, setshowDetail] = useState(false);
   const [spec, setspec] = useState(["ESIL", "MI", "SI"]);
   return !showDetail ? (
@@ -47,68 +58,8 @@ export default function Dashboard() {
           onClick={() => setshowDetail(true)}
         />
       </Flex>
-      {spec.map((item, index) => {
-        return (
-          <Flex
-            w="90%"
-            minH="150px"
-            bg="#E5E5E5"
-            mt={5}
-            flexDir="column"
-            borderRadius={10}
-            border="1px solid #CCCCCC"
-            overflow="hidden"
-            key={index}
-          >
-            <Center w="100%" h="50%">
-              {item}
-            </Center>
-            <Flex h="50%" w="100%">
-              <Center flex="1" flexWrap="wrap">
-                <Badge bg="red" color="white" m={1}>
-                  S1
-                </Badge>
-                <Badge bg="red" color="white" m={1}>
-                  S2
-                </Badge>
-                <Badge bg="red" color="white" m={1}>
-                  S3
-                </Badge>
-                {item === "SI" && (
-                  <Badge bg="red" color="white" m={1}>
-                    S4
-                  </Badge>
-                )}
-              </Center>
-              <Center flex="1" flexWrap="wrap">
-                <Badge bg="green" color="white" m={1}>
-                  G1
-                </Badge>
-                <Badge bg="green" color="white" m={1}>
-                  G2
-                </Badge>
-                <Badge bg="green" color="white" m={1}>
-                  G3
-                </Badge>
-                {item === "ESIL" && (
-                  <>
-                    <Badge bg="green" color="white" m={1}>
-                      G4
-                    </Badge>
-                    <Badge bg="green" color="white" m={1}>
-                      G5
-                    </Badge>
-                  </>
-                )}
-              </Center>
-              <Center flex="1">
-                <Badge bg="blue" color="white" m={1}>
-                  Licence
-                </Badge>
-              </Center>
-            </Flex>
-          </Flex>
-        );
+      {icc.map((item, index) => {
+        return <IccItem item={item} key={index} />;
       })}
     </Flex>
   ) : (

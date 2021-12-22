@@ -62,8 +62,11 @@ const groupsLabel = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"];
 export default function Dashboard() {
   const [spec, setspec] = useState(["ESIL", "MI", "SI"]);
 
-  const [semestersselected, setsemestersselected] = useState([]);
+  const [specialty, setspecialty] = useState("");
+  const [cycle, setcycle] = useState("licence");
   const [groupsselected, setgroupsselected] = useState([]);
+
+  const [semestersselected, setsemestersselected] = useState([]);
   const [unitiesselected, setunitiesselected] = useState([]);
 
   const [selectedmaster, setselectedmaster] = useState(false);
@@ -116,8 +119,15 @@ export default function Dashboard() {
           </Text>
         </Center>
         <Center w="100%">
-          <p>{special.name}</p>
-          <Input w="50%" textAlign="center" placeholder="Specialty" />
+          <p>{specialty}</p>
+          <p>{cycle}</p>
+          <p>{groupsselected}</p>
+          <Input
+            w="50%"
+            textAlign="center"
+            placeholder="Specialty"
+            onChange={(e) => setspecialty(e.target.value)}
+          />
         </Center>
       </Flex>
       <Flex w="100%" minH="16.6%">
@@ -141,6 +151,7 @@ export default function Dashboard() {
                 value="1"
                 onChange={(e) => {
                   setselectedmaster(false);
+                  setcycle("licence");
                 }}
               >
                 Licence
@@ -150,6 +161,7 @@ export default function Dashboard() {
                 value="2"
                 onChange={(e) => {
                   setselectedmaster(true);
+                  setcycle("master");
                 }}
               >
                 Master
@@ -337,8 +349,13 @@ export default function Dashboard() {
           colorScheme="blue"
           onClick={() => {
             axios
-              .post("/api/initial", {
-                data: challenge,
+              .post("/api/icc", {
+                specialty: {
+                  name: specialty,
+                  cycle: cycle,
+                  groups: groupsselected,
+                },
+                semester: challenge,
               })
               .then(function (response) {
                 console.log("item added to the db");
@@ -346,9 +363,15 @@ export default function Dashboard() {
               .catch(function (error) {
                 console.log(error);
               });
+            {
+              /*
+
+
             dispatch({
               type: "ADD_ICC",
             });
+                */
+            }
           }}
         >
           {" "}
@@ -367,3 +390,14 @@ export default function Dashboard() {
     </Flex>
   );
 }
+
+/* 
+
+{
+  name : 'si',
+  cycle : 'licence',
+  semester : [],
+  groups : []
+}
+
+*/
