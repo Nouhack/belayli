@@ -59,7 +59,7 @@ const options = [
 
 const groupsLabel = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8"];
 
-export default function Dashboard() {
+export default function Dashboard({ showDetail }) {
   const [spec, setspec] = useState(["ESIL", "MI", "SI"]);
 
   const [specialty, setspecialty] = useState("");
@@ -119,9 +119,6 @@ export default function Dashboard() {
           </Text>
         </Center>
         <Center w="100%">
-          <p>{specialty}</p>
-          <p>{cycle}</p>
-          <p>{groupsselected}</p>
           <Input
             w="50%"
             textAlign="center"
@@ -218,7 +215,6 @@ export default function Dashboard() {
             <Checkbox
               colorScheme="red"
               value="S3"
-              isDisabled={selectedmaster}
               onChange={(e) => {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
@@ -234,7 +230,6 @@ export default function Dashboard() {
             <Checkbox
               colorScheme="green"
               value="S4"
-              isDisabled={selectedmaster}
               onChange={(e) => {
                 if (e.target.checked) {
                   setsemestersselected((val) => [...val, e.target.value]);
@@ -359,6 +354,7 @@ export default function Dashboard() {
               })
               .then(function (response) {
                 console.log("item added to the db");
+                showDetail(false);
               })
               .catch(function (error) {
                 console.log(error);
@@ -376,15 +372,6 @@ export default function Dashboard() {
         >
           {" "}
           Save
-        </Button>
-        <Button
-          leftIcon={<AddIcon />}
-          w="50%"
-          variant="outline"
-          colorScheme="blue"
-          onClick={() => console.log(challenge)}
-        >
-          kiki
         </Button>
       </Center>
     </Flex>

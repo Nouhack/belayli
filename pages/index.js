@@ -1,5 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
-import { Button, Text, Flex, Center, Image } from "@chakra-ui/react";
+
+import { Button, Spinner, Text, Flex, Center, Image } from "@chakra-ui/react";
 import Student from "../screens/student";
 import Teacher from "../screens/prof";
 import Admin from "../screens/admin";
@@ -8,9 +9,25 @@ import styles from "../styles/Typist.module.css";
 import axios from "axios";
 import { useEffect } from "react";
 export default function Component() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  console.log("00000000000000000000000");
+  console.log(status);
+  console.log("00000000000000000000000");
 
-  if (session) {
+  if (status === "loading") {
+    return (
+      <Center h="100vh">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="red"
+          size="xl"
+        />
+      </Center>
+    );
+  }
+  if (status === "authenticated") {
     if (session.user.role === "student") {
       return <Admin />;
     }
@@ -23,6 +40,7 @@ export default function Component() {
       return <Admin />;
     }
   }
+
   return (
     <Flex w="100%" h="100vh">
       <Flex w="50%" bg="red" h="100%" direction="column">

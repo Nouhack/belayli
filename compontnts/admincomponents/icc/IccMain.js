@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { PolarArea } from "react-chartjs-2";
 import { AddIcon } from "@chakra-ui/icons";
 import IccDetails from "./IccDtails";
@@ -26,18 +25,20 @@ import {
   BellIcon,
   ArrowBackIcon,
 } from "@chakra-ui/icons";
+import Image from "next/image";
 
 export default function Dashboard() {
   const [icc, seticc] = useState([]);
+  const [showDetail, setshowDetail] = useState(false);
   useEffect(() => {
     console.log("reni hna");
     axios.get("/api/icc").then((res) => {
       seticc(res.data);
+      console.log("===================");
       console.log(res.data);
     });
-  }, []);
+  }, [showDetail]);
 
-  const [showDetail, setshowDetail] = useState(false);
   const [spec, setspec] = useState(["ESIL", "MI", "SI"]);
   return !showDetail ? (
     <Flex
@@ -46,7 +47,7 @@ export default function Dashboard() {
       bg="white"
       p="20px"
       direction="column"
-      justify="center"
+      justify="flex-start"
       overflowY="auto"
       borderTopRightRadius={50}
       borderBottomRightRadius={50}
@@ -58,11 +59,15 @@ export default function Dashboard() {
           onClick={() => setshowDetail(true)}
         />
       </Flex>
-      {icc.map((item, index) => {
-        return <IccItem item={item} key={index} />;
-      })}
+      {icc.length !== 0 ? (
+        icc.map((item, index) => {
+          return <IccItem item={item} key={index} />;
+        })
+      ) : (
+        <Image src="/empty.svg" alt="me" width="200" height="200" />
+      )}
     </Flex>
   ) : (
-    <IccDetails />
+    <IccDetails showDetail={setshowDetail} />
   );
 }

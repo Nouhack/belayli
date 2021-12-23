@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-
+import AsyncSelect from "react-select/async";
+import axios from "axios";
 import {
   Container,
   Box,
   Stack,
   HStack,
+  Select,
   Avatar,
   Center,
   IconButton,
@@ -16,6 +18,26 @@ import {
 } from "@chakra-ui/react";
 
 export default function Specialty() {
+  const [selectedspecgroups, setselectedspecgroups] = useState([]);
+  const [selectedspecsemester, setselectedspecsemester] = useState([]);
+  const [studentsList, setstudentsList] = useState([]);
+  //============================
+  const [selectedspecname, setselectedspecname] = useState("");
+  const [selectedsemname, setselectedsemname] = useState("");
+  const [selectedgrpname, setselectedgrpname] = useState("");
+
+  //============================
+  const [specs, setspecs] = useState([]);
+  useEffect(() => {
+    axios.get("/api/student").then((res) => {
+      setstudentsList(res.data);
+    });
+  }, []);
+  useEffect(() => {
+    axios.get("/api/icc").then((res) => {
+      setspecs(res.data);
+    });
+  }, []);
   const [specialtyList, setspecialtyList] = useState([
     "Physics",
     "math",
@@ -46,35 +68,98 @@ export default function Specialty() {
     7: "M 1",
     8: "M 2",
   });
-  const [columns, setcolumns] = useState([
-    { title: "Name ", field: "name" },
+
+  var columns = [
+    {
+      title: "Name ",
+      field: "name",
+    },
     { title: "Username ", field: "username" },
     { title: "Matricule ", field: "matricule" },
     { title: "Password", field: "password" },
     {
       title: "Spécialité",
-      field: "Spécialité",
-      lookup: spec,
+      field: "specialty",
+      editComponent: (props) => (
+        <Select
+          w="200px"
+          placeholder="Select Specialty"
+          value={selectedspecname}
+        >
+          {specs.map((item, index) => {
+            return (
+              <option
+                key={index}
+                value={item.name}
+                onClick={(e) => {
+                  setselectedspecname(item.name);
+                  setselectedspecgroups(item.groups);
+                  axios
+                    .get("/api/getsem", {
+                      params: {
+                        semarray: item.semesters,
+                      },
+                    })
+                    .then((res) => {
+                      setselectedspecsemester(res.data);
+                    });
+                }}
+              >
+                {item.name}
+              </option>
+            );
+          })}
+        </Select>
+      ),
     },
-    { title: "Semester", field: "semester", lookup: seme },
-    { title: "Group", field: "group", lookup: groups },
-    { title: "Email", field: "email" },
-    { title: "Phone", field: "Phone" },
-  ]);
-
-  const [data, setdata] = useState([
     {
-      name: "saiche",
-      username: "nouh",
-      matricule: "HJH34",
-      password: "sdlkfjslfdkj",
-      Spécialité: 2,
-      semester: 3,
-      group: 1,
-      email: "nouh@gmail.com",
-      Phone: "4935345",
+      title: "Semester",
+      field: "semester",
+
+      editComponent: (props) => (
+        <Select
+          placeholder="Select Semester(s)"
+          w="200px"
+          value={selectedsemname}
+        >
+          {selectedspecsemester.map((item, index) => {
+            return (
+              <option
+                key={index}
+                value={item.name}
+                onClick={(e) => setselectedsemname(e.target.value)}
+              >
+                {item.name}
+              </option>
+            );
+          })}
+        </Select>
+      ),
     },
-  ]);
+    {
+      title: "Group",
+      field: "group",
+
+      editComponent: (props) => (
+        <Select placeholder="Select Group(s)" w="200px" value={selectedgrpname}>
+          {selectedspecgroups.map((item, index) => {
+            return (
+              <option
+                key={index}
+                value={item}
+                onClick={(e) => setselectedgrpname(e.target.value)}
+              >
+                {item}
+              </option>
+            );
+          })}
+        </Select>
+      ),
+    },
+    { title: "Email", field: "email" },
+    { title: "Phone", field: "phone" },
+  ];
+
   const [showSemester, setshowSemester] = useState(false);
   return (
     <Flex
@@ -92,16 +177,49 @@ export default function Specialty() {
           boxShadow: "none",
         }}
         columns={columns}
-        data={data}
+        data={studentsList}
         title="Students List"
+        options={{
+          headerStyle: {
+            backgroundColor: "red",
+            color: "#FFF",
+            fontWeight: "bold",
+          },
+        }}
         editable={{
           onRowAdd: (newData) =>
             new Promise((resolve, reject) => {
-              setTimeout(() => {
-                setdata([...data, newData]);
-
-                resolve();
-              }, 1000);
+              axios
+                .post("/api/student", {
+                  student: {
+                    name: newData.name,
+                    username: newData.username,
+                    matricule: newData.matricule,
+                    password: newData.password,
+                    specialty: selectedspecname,
+                    semester: selectedsemname,
+                    group: selectedgrpname,
+                    email: newData.email,
+                    phone: newData.phone,
+                  },
+                })
+                .then((res) => {
+                  setstudentsList((per) => [
+                    ...per,
+                    {
+                      name: newData.name,
+                      username: newData.username,
+                      matricule: newData.matricule,
+                      password: newData.password,
+                      specialty: selectedspecname,
+                      semester: selectedsemname,
+                      group: selectedgrpname,
+                      email: newData.email,
+                      phone: newData.phone,
+                    },
+                  ]);
+                  resolve();
+                });
             }),
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {

@@ -40,6 +40,9 @@ export default function Icc({ item, key }) {
       })
       .then((res) => {
         setsems(res.data);
+        console.log("seeeeeeeeeeeeeeeeems");
+        console.log(res.data);
+        console.log("seeeeeeeeeeeeeeeeems");
       });
   }, []);
 
@@ -62,10 +65,10 @@ export default function Icc({ item, key }) {
       </Center>
       <Flex h="50%" w="100%">
         <Center flex="1" flexWrap="wrap">
-          {sems.map((semItem, index) => {
+          {sems.map((it, index) => {
             return (
               <Badge bg="red" color="white" m={1}>
-                {semItem.name}
+                {it.name}
               </Badge>
             );
           })}
