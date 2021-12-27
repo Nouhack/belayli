@@ -10,23 +10,36 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       await client.connect();
-      var vals =
-        typeof req.query["semarray[]"] !== "object"
-          ? req.query["semarray[]"].split()
-          : req.query["semarray[]"];
+      var nex = [];
+      var result = [];
+
+      const specialties = await client
+        .db("mehdi")
+
+        .collection("specialty")
+
+        .find({})
+
+        .toArray();
+
       const semesters = await client
         .db("mehdi")
 
         .collection("semester")
 
-        .find({
-          _id: {
-            $in: vals.map((item) => ObjectId(item)),
-          },
-        })
+        .find({})
 
         .toArray();
-      res.status(200).json(semesters);
+
+      result = specialties.map((item) => {
+        return item.semesters.map((ii) => {
+          return semesters.filter((ll) => {
+            return ll._id == ii;
+          });
+        });
+      });
+
+      res.status(200).json(result);
     } catch (error) {
       console.log(error);
     }

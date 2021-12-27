@@ -7,6 +7,7 @@ import {
   Box,
   Divider,
   Fade,
+  Select,
   ScaleFade,
   Slide,
   SlideFade,
@@ -234,62 +235,13 @@ export default function Wp() {
               />
               <Divider orientation="horizontal" mt={3} />
               <Text mt={5} fontSize="lg" fontWeight="bold">
-                Spécialités
+                ICC
               </Text>
-              <Flex flexWrap="wrap" mt={3} justify="space-around">
-                {spec.map((item, index) => {
-                  return (
-                    <Checkbox
-                      colorScheme="red"
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          // add to the array
-                          setselectedspec((rev) => [...rev, item]);
-                        } else {
-                          // remove from the array
-                          setselectedspec((rev) => {
-                            rev.splice(rev.indexOf(item), 1);
-
-                            return [...rev];
-                          });
-                        }
-                      }}
-                    >
-                      {item}
-                    </Checkbox>
-                  );
-                })}
-              </Flex>
-
-              <Text mt={5} fontSize="lg" fontWeight="bold">
-                Semestre
-              </Text>
-              <Flex flexWrap="wrap" mt={3} justify="space-around">
-                {seme.map((item, index) => {
-                  return (
-                    <Checkbox
-                      colorScheme="blue"
-                      mr={1}
-                      ml={1}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          // add to the array
-                          setselectedseme((rev) => [...rev, item]);
-                        } else {
-                          // remove from the array
-                          setselectedseme((rev) => {
-                            rev.splice(rev.indexOf(item), 1);
-
-                            return [...rev];
-                          });
-                        }
-                      }}
-                    >
-                      {item}
-                    </Checkbox>
-                  );
-                })}
-              </Flex>
+              <Select placeholder="select ICC" size="md">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </Select>
 
               <Text mt={5} fontSize="lg" fontWeight="bold">
                 Groupes
@@ -354,3 +306,34 @@ export default function Wp() {
     </Flex>
   );
 }
+
+/*
+
+{
+  name : 'nouh',
+  username : 'saiche',
+  class : [
+    {
+      specialty : 'esil',
+      semester : 's1',
+      groups : [g1,g2,g3]
+    },
+
+    {
+      specialty : 'esil',
+      semester : 's2',
+      groups : [g1]
+    }
+  ]
+}
+
+
+
+===========================================-==--0-==
+
+[
+  { name : "s1", specialty : "esil" , groups : ["g1","g2","g3"]},
+
+  { name : "s2", specialty : "esil" , groups : ["g1","g2","g3"]}
+]
+*/
