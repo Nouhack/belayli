@@ -49,13 +49,13 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-export default function ClassComp({ spec, sem, groups }) {
+export default function ClassComp({ item }) {
   return (
-    <Flex bg="red" direction="row">
-      <Box bg="green">{spec}</Box>
-      <Box bg="blue">{sem}</Box>
-      <Box bg="pink">{groups}</Box>
-      <Box></Box>
+    <Flex bg="red" direction="row" p={2} ml={2} mt={10} borderRadius={10}>
+      <Box bg="green">{item.specialty}</Box>
+      <Box bg="blue">{item.semester}</Box>
+      <Box bg="pink">{item.groups}</Box>
+      <Box>delete</Box>
     </Flex>
   );
 }

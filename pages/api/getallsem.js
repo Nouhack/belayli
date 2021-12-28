@@ -18,10 +18,29 @@ export default async function handler(req, res) {
 
         .collection("specialty")
 
-        .find({})
-
+        .aggregate([
+          {
+            $lookup: {
+              from: "semester",
+              localField: "semesters",
+              foreignField: "_id",
+              as: "test",
+            },
+          },
+        ])
         .toArray();
 
+      res.status(200).json({
+        sp: specialties.map((item) => {
+          return {
+            specialty: item.name,
+            semesters: item.test.map((item) => item.name),
+            groups: item.groups,
+          };
+        }),
+      });
+      /* 
+      
       const semesters = await client
         .db("mehdi")
 
@@ -31,15 +50,22 @@ export default async function handler(req, res) {
 
         .toArray();
 
-      result = specialties.map((item) => {
-        return item.semesters.map((ii) => {
-          return semesters.filter((ll) => {
-            return ll._id == ii;
+      result = semesters.map((item) => {
+        var sp = specialties.map((item2) => {
+          item2.semesters.filter((item3) => {
+            return item3.toString() == item._id.toString();
           });
         });
+
+        return {
+          id: item._id,
+          name: item.name,
+          specialty: sp,
+        };
       });
 
       res.status(200).json(result);
+      */
     } catch (error) {
       console.log(error);
     }

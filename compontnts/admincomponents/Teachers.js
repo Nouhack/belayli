@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-
+import aios from "axios";
+import ClassComponents from "./teacher/ClassComp";
 import {
   Container,
   Checkbox,
@@ -51,9 +52,25 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 export default function Wp() {
+  const [iccData, seticcData] = useState([]);
+  const [classIcc, setclassIcc] = useState([]);
+  useEffect(() => {
+    axios.get("/api/getallsem").then((res) => {
+      seticcData((prev) => [...prev, res.data]);
+      console.log("khlass");
+    });
+  }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [iccGroups, seticcGroups] = useState([]);
+
+  const [selectedSpec, setselectedSpec] = useState("");
+  const [selectedsem, setselectedsem] = useState("");
+  const [selectedgroups, setselectedgroups] = useState([]);
+  const [groupsdefault, setgroupsdefault] = useState(true);
 
   const [placement, setPlacement] = React.useState("right");
 
@@ -65,7 +82,6 @@ export default function Wp() {
   const [phone, setphone] = useState(null);
   const [selectedspec, setselectedspec] = useState([]);
   const [selectedseme, setselectedseme] = useState([]);
-  const [selectedgroups, setselectedgroups] = useState([]);
 
   const [specialtyList, setspecialtyList] = useState([
     "Physics",
@@ -238,20 +254,43 @@ export default function Wp() {
                 ICC
               </Text>
               <Select placeholder="select ICC" size="md">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
+                {iccData.length > 0 &&
+                  iccData[0].sp.map((item, index) => {
+                    return item.semesters.map((item2, index2) => {
+                      return (
+                        <option
+                          key={index2}
+                          value={(item, item2)}
+                          onClick={(e) => {
+                            seticcGroups(item.groups);
+                            setselectedSpec(item.specialty);
+                            setselectedsem(e.target.value);
+                            setselectedgroups([]);
+                            console.log(
+                              item.specialty,
+                              e.target.value,
+                              item.groups
+                            );
+                          }}
+                        >
+                          {item.specialty} {item2}
+                        </option>
+                      );
+                    });
+                  })}
               </Select>
 
               <Text mt={5} fontSize="lg" fontWeight="bold">
                 Groupes
               </Text>
               <Flex flexWrap="wrap" mt={3} justify="space-around">
-                {groups.map((item, index) => {
+                {iccGroups.map((item, index) => {
                   return (
                     <Checkbox
                       colorScheme="green"
+                      key={item}
                       //defaultIsChecked
+                      isChecked={selectedgroups.includes(item) ? true : false}
                       onChange={(e) => {
                         if (e.target.checked) {
                           // add to the array
@@ -260,10 +299,19 @@ export default function Wp() {
                         } else {
                           // remove from the array
                           setselectedgroups((rev) => {
-                            rev.splice(rev.indexOf(item), 1);
+                            var newarr = rev.splice(rev.indexOf(item), 1);
 
-                            return [...rev];
+                            return [newarr];
                           });
+
+                          console.log(
+                            "-------------------  selectedgroup  -----------------------"
+                          );
+                          console.log(selectedgroups);
+                          console.log(
+                            "-------------------  classicc-----------------------"
+                          );
+                          console.log(classIcc);
                         }
                       }}
                     >
@@ -272,27 +320,47 @@ export default function Wp() {
                   );
                 })}
               </Flex>
-
+              <Button
+                onClick={() => {
+                  setclassIcc((prev) => [
+                    ...prev,
+                    {
+                      specialty: selectedSpec,
+                      semester: selectedsem,
+                      groups: [...selectedgroups],
+                    },
+                  ]),
+                    setselectedgroups([]);
+                }}
+              >
+                add
+              </Button>
+              <Flex flexWrap="wrap" justify="center" align="center" bg="blue">
+                {classIcc.map((item, index) => {
+                  return <ClassComponents item={item} key={index} />;
+                })}
+              </Flex>
               <Flex alignItems="center" justify="center" mt={9} mb={5}>
                 <ButtonGroup variant="outline" spacing="6">
                   <Button
                     colorScheme="blue"
-                    onClick={() =>
-                      setdata((prev) => [
-                        ...prev,
-                        {
-                          name: name,
-                          username: username,
-                          matricule: matricule,
-                          password: password,
-                          Spécialité: selectedspec.toString(),
-                          semester: selectedseme.toString(),
-                          group: selectedgroups.toString(),
-                          email: email,
-                          Phone: phone,
-                        },
-                      ])
-                    }
+                    onClick={() => {
+                      console.log(iccData[0].sp),
+                        setdata((prev) => [
+                          ...prev,
+                          {
+                            name: name,
+                            username: username,
+                            matricule: matricule,
+                            password: password,
+                            Spécialité: selectedspec.toString(),
+                            semester: selectedseme.toString(),
+                            group: selectedgroups.toString(),
+                            email: email,
+                            Phone: phone,
+                          },
+                        ]);
+                    }}
                   >
                     Save
                   </Button>
