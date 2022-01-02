@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import aios from "axios";
 import ClassComponents from "./teacher/ClassComp";
+import { AddIcon } from "@chakra-ui/icons";
 import {
   Container,
   Checkbox,
   Box,
   Divider,
   Fade,
-  Select,
   ScaleFade,
   Slide,
   SlideFade,
@@ -52,17 +54,92 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { Select as Selectt } from "@chakra-ui/react";
 import axios from "axios";
+
+const animatedComponents = makeAnimated();
 
 export default function Wp() {
   const [iccData, seticcData] = useState([]);
   const [classIcc, setclassIcc] = useState([]);
+  const [teacherIsAdded, setteacherIsAdded] = useState(false);
+  const [modules, setmodules] = useState([]);
   useEffect(() => {
     axios.get("/api/getallsem").then((res) => {
       seticcData((prev) => [...prev, res.data]);
       console.log("khlass");
+      console.log(res.data);
     });
   }, []);
+
+  const options = [
+    { value: "francais", label: "francais" },
+    { value: "englais", label: "englais" },
+    { value: "math", label: "math" },
+    { value: "algebra", label: "algebra" },
+    { value: "algorithme", label: "algorithme" },
+    { value: "sgbd", label: "sgbd" },
+    { value: "structuremachide", label: "structure machine" },
+    { value: "javaEE", label: "java EE" },
+    { value: "statistique", label: "statistique" },
+    { value: "probabilite", label: "probabilite" },
+  ];
+  useEffect(() => {
+    axios.get("/api/teacher").then((res) => {
+      setdata(
+        res.data.map((item) => {
+          return {
+            ...item,
+            Spécialité: [
+              ...new Set(item.class.map((item) => item.specialty)),
+            ].toString(),
+            semester: [
+              ...new Set(item.class.map((item) => item.semester)),
+            ].toString(),
+            group: [
+              ...new Set(
+                [].concat.apply(
+                  [],
+                  item.class.map((item) => item.groups)
+                )
+              ),
+            ].toString(),
+          };
+        })
+      );
+      //setdata(res.data);
+    });
+  }, []);
+
+  const pickDuplicatespecialty = (arr) => [
+    ...new Set(
+      [].concat.apply(
+        [],
+
+        arr.map((item) => item.specialty)
+      )
+    ),
+  ];
+
+  const pickDuplicatesemester = (arr) => [
+    ...new Set(
+      [].concat.apply(
+        [],
+
+        arr.map((item) => item.semester)
+      )
+    ),
+  ];
+
+  const pickDuplicateGroups = (arr) => [
+    ...new Set(
+      [].concat.apply(
+        [],
+
+        arr.map((item) => item.groups)
+      )
+    ),
+  ];
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [iccGroups, seticcGroups] = useState([]);
@@ -117,19 +194,7 @@ export default function Wp() {
     { title: "Phone", field: "Phone" },
   ]);
 
-  const [data, setdata] = useState([
-    {
-      name: "nazar",
-      username: "massi",
-      matricule: "HJH34",
-      password: "sdlkfjslfdkj",
-      Spécialité: ["Spec 1", "Spec 2", "Spec 3"].toString(),
-      semester: ["L 2", "L 3"].toString(),
-      group: ["G2", "G4"].toString(),
-      email: "nouh@gmail.com",
-      Phone: "4935345",
-    },
-  ]);
+  const [data, setdata] = useState([]);
   const [showSemester, setshowSemester] = useState(false);
   return (
     <Flex
@@ -140,9 +205,6 @@ export default function Wp() {
       borderTopRightRadius={50}
       borderBottomRightRadius={50}
     >
-      {selectedspec.toString()}
-      {selectedseme.toString()}
-      {selectedgroups.toString()}
       <MaterialTable
         style={{
           maxHeight: "100%",
@@ -160,6 +222,13 @@ export default function Wp() {
             onClick: onOpen,
           },
         ]}
+        options={{
+          headerStyle: {
+            backgroundColor: "red",
+            color: "#FFF",
+            fontWeight: "bold",
+          },
+        }}
         editable={{
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
@@ -253,37 +322,56 @@ export default function Wp() {
               <Text mt={5} fontSize="lg" fontWeight="bold">
                 ICC
               </Text>
-              <Select placeholder="select ICC" size="md">
-                {iccData.length > 0 &&
-                  iccData[0].sp.map((item, index) => {
-                    return item.semesters.map((item2, index2) => {
-                      return (
-                        <option
-                          key={index2}
-                          value={(item, item2)}
-                          onClick={(e) => {
-                            seticcGroups(item.groups);
-                            setselectedSpec(item.specialty);
-                            setselectedsem(e.target.value);
-                            setselectedgroups([]);
-                            console.log(
-                              item.specialty,
-                              e.target.value,
-                              item.groups
-                            );
-                          }}
-                        >
-                          {item.specialty} {item2}
-                        </option>
-                      );
-                    });
-                  })}
-              </Select>
+              <Flex>
+                <Selectt placeholder="select ICC" size="md">
+                  {iccData.length > 0 &&
+                    iccData[0].sp.map((item, index) => {
+                      return item.semesters.map((item2, index2) => {
+                        return (
+                          <option
+                            key={index2}
+                            value={(item, item2)}
+                            onClick={(e) => {
+                              seticcGroups(item.groups);
+                              setselectedSpec(item.specialty);
+                              setselectedsem(e.target.value);
+                              setselectedgroups([]);
+                              console.log(
+                                item.specialty,
+                                e.target.value,
+                                item.groups
+                              );
+                            }}
+                          >
+                            {item.specialty} {item2}
+                          </option>
+                        );
+                      });
+                    })}
+                </Selectt>
 
+                <IconButton
+                  aria-label="Search database"
+                  icon={<AddIcon />}
+                  onClick={() => {
+                    setclassIcc((prev) => [
+                      ...prev,
+                      {
+                        specialty: selectedSpec,
+                        semester: selectedsem,
+                        groups: [...selectedgroups],
+                        modules: [...modules],
+                      },
+                    ]),
+                      setselectedgroups([]);
+                    setmodules([]);
+                  }}
+                />
+              </Flex>
               <Text mt={5} fontSize="lg" fontWeight="bold">
                 Groupes
               </Text>
-              <Flex flexWrap="wrap" mt={3} justify="space-around">
+              <Flex flexWrap="wrap" mt={3} mb={3} justify="space-around">
                 {iccGroups.map((item, index) => {
                   return (
                     <Checkbox
@@ -320,51 +408,77 @@ export default function Wp() {
                   );
                 })}
               </Flex>
-              <Button
-                onClick={() => {
-                  setclassIcc((prev) => [
-                    ...prev,
-                    {
-                      specialty: selectedSpec,
-                      semester: selectedsem,
-                      groups: [...selectedgroups],
-                    },
-                  ]),
-                    setselectedgroups([]);
-                }}
+              <Flex
+                flexWrap="wrap"
+                justify="center"
+                align="center"
+                ml={2}
+                //mt={10}
               >
-                add
-              </Button>
-              <Flex flexWrap="wrap" justify="center" align="center" bg="blue">
                 {classIcc.map((item, index) => {
-                  return <ClassComponents item={item} key={index} />;
+                  return (
+                    <ClassComponents
+                      item={item}
+                      key={index}
+                      icc={classIcc}
+                      seticc={setclassIcc}
+                    />
+                  );
                 })}
               </Flex>
+
+              <Text mt={5} fontSize="lg" fontWeight="bold">
+                Modules
+              </Text>
+              <Select
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                isMulti
+                placeholder="select teacher modules"
+                options={options}
+                onChange={(e) => setmodules(e.map((item) => item.value))}
+              />
+
               <Flex alignItems="center" justify="center" mt={9} mb={5}>
                 <ButtonGroup variant="outline" spacing="6">
                   <Button
                     colorScheme="blue"
                     onClick={() => {
-                      console.log(iccData[0].sp),
-                        setdata((prev) => [
-                          ...prev,
-                          {
+                      //---------- db -----------
+                      axios
+                        .post("/api/teacher", {
+                          teacher: {
                             name: name,
                             username: username,
                             matricule: matricule,
                             password: password,
-                            Spécialité: selectedspec.toString(),
-                            semester: selectedseme.toString(),
-                            group: selectedgroups.toString(),
+                            class: classIcc,
                             email: email,
                             Phone: phone,
                           },
-                        ]);
+                        })
+                        .then((res) => setteacherIsAdded(true));
+                      //----------  ui -----------
+                      setdata((prev) => [
+                        ...prev,
+                        {
+                          name: name,
+                          username: username,
+                          matricule: matricule,
+                          password: password,
+                          Spécialité:
+                            pickDuplicatespecialty(classIcc).join(","),
+                          semester: pickDuplicatesemester(classIcc).join(","),
+                          group: pickDuplicateGroups(classIcc).join(","),
+                          email: email,
+                          Phone: phone,
+                        },
+                      ]);
                     }}
                   >
                     Save
                   </Button>
-                  <Button>Cancel</Button>
+                  <Button onClick={() => console.log(modules)}>Cancel</Button>
                 </ButtonGroup>
               </Flex>
             </DrawerBody>

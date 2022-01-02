@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Container,
@@ -14,15 +14,22 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Semester from "./Semester";
+import axios from "axios";
 
-export default function Specialty() {
-  const [specialtyList, setspecialtyList] = useState([
-    "Physics",
-    "math",
-    "Algorithme",
-    "English",
-    "Algebra",
-  ]);
+export default function Specialty({ id }) {
+  const [specialtyList, setspecialtyList] = useState([]);
+  const [choosenspec, setchoosenspec] = useState("");
+  useEffect(() => {
+    axios
+      .get("/api/class", {
+        params: {
+          id: id,
+        },
+      })
+      .then((res) => {
+        setspecialtyList(res.data.class);
+      });
+  }, []);
   const [showSemester, setshowSemester] = useState(false);
   return (
     <Flex
@@ -37,7 +44,11 @@ export default function Specialty() {
       overflowY="auto"
     >
       {showSemester ? (
-        <Semester />
+        <Semester
+          classicc={specialtyList.filter(
+            (item) => item.specialty == choosenspec
+          )}
+        />
       ) : (
         <>
           {specialtyList.map((item, index) => {
@@ -53,11 +64,17 @@ export default function Specialty() {
                 color="black"
                 m={3}
                 onClick={() => {
+                  setchoosenspec(item.specialty);
                   setshowSemester(true);
+                  console.log(
+                    specialtyList.filter(
+                      (item2) => item2.specialty == item.specialty
+                    )
+                  );
                 }}
               >
                 <Text fontSize="2xl" fontWeight="bold">
-                  {item}
+                  {item.specialty}
                 </Text>
               </Center>
             );

@@ -27,7 +27,7 @@ import AppealList from "../compontnts/teachercomponents/AppealList";
 import Results from "../compontnts/clientComponents/Results";
 import Appeals from "../compontnts/clientComponents/Appeals";
 //import moduleName from "module";
-export default function Home() {
+export default function Home({ name, id }) {
   const [screenIndex, setscreenIndex] = useState(0);
   return (
     <div
@@ -150,7 +150,7 @@ export default function Home() {
               <Avatar name="Ryan Florence" src="https://picsum.photos/200" />
 
               <Text fontSize="md" color="#637a98" fontWeight="bold" mt="10px">
-                Slamani Mehdi
+                {name}
               </Text>
             </Flex>
             <Center h="15vh" w="100%">
@@ -171,7 +171,7 @@ export default function Home() {
           ) : screenIndex == 1 ? (
             <Calendar />
           ) : screenIndex == 2 ? (
-            <Specialty />
+            <Specialty id={id} />
           ) : (
             <AppealList />
           )}

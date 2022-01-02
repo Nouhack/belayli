@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Container,
@@ -14,44 +14,44 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Groups from "./Groups";
-import Modules from "./Modules";
-export default function Specialty({ classicc, classDetail }) {
+export default function Modules({ classicc, classDetail }) {
+  useEffect(() => {
+    console.log(classicc[0].modules);
+  }, []);
+  const [showuserslist, setshowuserslist] = useState(false);
   const [showgroups, setshowgroups] = useState(false);
-  const [choosensemester, setchoosensemester] = useState("");
-  const [classDetails, setclassDetail] = useState("");
-  const [years, setyears] = useState(["S1", "S3", "S4"]);
+  const [choosenmodule, setchoosenmodule] = useState("");
+  const [groups, setgroups] = useState(["G2", "G3"]);
   return (
     <>
       {showgroups ? (
-        <Modules
-          classicc={classicc.filter((item) => item.semester == choosensemester)}
-          classDetail={classDetails}
+        <Groups
+          classicc={classicc}
+          module={choosenmodule}
+          classDetail={classDetail}
         />
       ) : (
         <>
-          {classicc.map((item, index) => {
+          {classicc[0].modules.map((item, index) => {
             return (
               <Center
                 key={index}
                 w="42%"
                 h={200}
+                borderRadius={10}
                 bg={"white"}
                 boxShadow="xl"
                 border="1px solid gray"
                 color="black"
-                borderRadius={10}
                 m={3}
                 onClick={() => {
                   setshowgroups(true);
-                  setchoosensemester(item.semester);
-                  setclassDetail({
-                    specialty: item.specialty,
-                    semester: item.semester,
-                  });
+                  setchoosenmodule(item);
+                  console.log(item);
                 }}
               >
                 <Text fontSize="2xl" fontWeight="bold">
-                  {item.semester}
+                  {item}
                 </Text>
               </Center>
             );
@@ -61,3 +61,13 @@ export default function Specialty({ classicc, classDetail }) {
     </>
   );
 }
+
+//admin use cases
+/*
+add users
+add teachers
+add specialty
+add groups
+
+
+*/

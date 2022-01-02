@@ -14,16 +14,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import StudentTable from "./Studenttable";
-export default function Groups() {
+export default function Groups({ classicc, classDetail, module }) {
   const [showuserslist, setshowuserslist] = useState(false);
   const [groups, setgroups] = useState(["G2", "G3"]);
+  const [crit, setcrit] = useState("");
   return (
     <>
       {showuserslist ? (
-        <StudentTable />
+        <StudentTable criteria={crit} module={module} />
       ) : (
         <>
-          {groups.map((item, index) => {
+          {classicc[0].groups.map((item, index) => {
             return (
               <Center
                 key={index}
@@ -37,6 +38,14 @@ export default function Groups() {
                 m={3}
                 onClick={() => {
                   setshowuserslist(true);
+                  console.log({
+                    ...classDetail,
+                    group: item,
+                  });
+                  setcrit({
+                    ...classDetail,
+                    group: item,
+                  });
                 }}
               >
                 <Text fontSize="2xl" fontWeight="bold">

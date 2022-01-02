@@ -49,13 +49,34 @@ import {
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
-export default function ClassComp({ item }) {
+import { CloseIcon } from "@chakra-ui/icons";
+
+export default function ClassComp({ item, icc, seticc }) {
   return (
-    <Flex bg="red" direction="row" p={2} ml={2} mt={10} borderRadius={10}>
-      <Box bg="green">{item.specialty}</Box>
-      <Box bg="blue">{item.semester}</Box>
-      <Box bg="pink">{item.groups}</Box>
-      <Box>delete</Box>
+    <Flex bg="#DAF7A6" p={2} borderRadius={10} ml={2} mr={2} m={2}>
+      <Box m={1} fontWeight="bold">
+        {item.specialty}
+      </Box>
+      <Box m={1} fontWeight="bold">
+        {item.semester}
+      </Box>
+      <Box m={1} fontWeight="bold">
+        {item.groups.join(",")}
+      </Box>
+      <IconButton
+        aria-label="Search database"
+        size="sm"
+        icon={<CloseIcon />}
+        onClick={() => {
+          const index = icc.indexOf(item);
+          var newarr = [...icc];
+          if (index > -1) {
+            newarr.splice(index, 1);
+          }
+          seticc(newarr);
+          console.log(index);
+        }}
+      />
     </Flex>
   );
 }

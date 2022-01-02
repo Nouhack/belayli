@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut, SessionProvider } from "next-auth/react";
 
 import { Button, Spinner, Text, Flex, Center, Image } from "@chakra-ui/react";
 import Student from "../screens/student";
@@ -28,15 +28,15 @@ export default function Component() {
     );
   }
   if (status === "authenticated") {
-    if (session.user.role === "student") {
-      return <Admin />;
+    if (session.user.name === "student") {
+      return <Student name={session.user.email} id={session.user.image} />;
     }
 
-    if (session.user.role === "teacher") {
-      return <Teacher />;
+    if (session.user.name === "teacher") {
+      return <Teacher name={session.user.email} id={session.user.image} />;
     }
 
-    if (session.user.role === "admin") {
+    if (session.user.name === "admin") {
       return <Admin />;
     }
   }
